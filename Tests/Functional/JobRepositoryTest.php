@@ -286,12 +286,11 @@ class JobRepositoryTest extends BaseTestCase
 
     protected function setUp()
     {
-        $this->createClient();
+        static::createClient();
         $this->importDatabaseSchema();
 
-        $this->dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
-        $this->em = self::$kernel->getContainer()->get('doctrine')->getManagerForClass('JMSJobQueueBundle:Job');
+        $this->dispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $this->em = self::$kernel->getContainer()->get('doctrine')->getManagerForClass(Job::class);
         $this->repo = $this->em->getRepository('JMSJobQueueBundle:Job');
-        $this->repo->setDispatcher($this->dispatcher);
     }
 }
