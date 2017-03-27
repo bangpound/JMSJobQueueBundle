@@ -3,29 +3,48 @@
 namespace JMS\JobQueueBundle\Controller;
 
 use Doctrine\Common\Util\ClassUtils;
-use JMS\DiExtraBundle\Annotation as DI;
 use JMS\JobQueueBundle\Entity\Job;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\View\TwitterBootstrapView;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Class JobController
+ * @package JMS\JobQueueBundle\Controller
+ * @Route(service="jms_job_queue.job_controller")
+ */
 class JobController
 {
-    /** @DI\Inject("doctrine") */
+	/**
+	 * @var RegistryInterface
+	 */
     private $registry;
 
-    /** @DI\Inject */
+	/**
+	 * @var RouterInterface
+	 */
     private $router;
 
-    /** @DI\Inject("%jms_job_queue.statistics%") */
+	/**
+	 * @var bool
+	 */
     private $statisticsEnabled;
 
-    /**
+    public function __construct(RegistryInterface $registry, RouterInterface $router, $statisticsEnabled)
+	{
+		$this->registry = $registry;
+		$this->router = $router;
+		$this->statisticsEnabled = $statisticsEnabled;
+	}
+
+	/**
      * @Route("/", name = "jms_jobs_overview")
      * @Template("JMSJobQueueBundle:Job:overview.html.twig")
      */
